@@ -1,13 +1,10 @@
-#TO DO APP
-
-
 tasks = []
-
+# DONE BY = SHAIK FARDEEN BASHA, VYSHNAVI TAKLAM, SHREEYANSHI GAUTAM, JAYA SHANKAR, PRASANNA KUMAR NAYAK, RAJENDRA PRASAD
 def addTask():
     task_name = input("Please enter a task: ")
-    priority = input("Enter priority (high, medium, low): ")
-    
-    tasks.append({"name": task_name, "priority": priority })
+    priority = input("Enter priority (high, medium, low): ").lower()
+    task_time = input('Enter the time of task (hrs): ')
+    tasks.append({"name": task_name, "priority": priority, "time": task_time})
     print(f"Task '{task_name}' with priority '{priority}' added to the list.")
 
 def listTasks():
@@ -16,7 +13,7 @@ def listTasks():
     else:
         print("Current Tasks:")
         for index, task in enumerate(tasks):
-            print(f"Task #{index}. {task['name']} [{task['priority']}]")
+            print(f"Task #{index + 1}: {task['name']} [{task['priority']}] at {task['time']}")
 
 def deleteTask():
     if not tasks:
@@ -24,10 +21,10 @@ def deleteTask():
         return
     listTasks()
     try:
-        index = int(input("Enter the task number to delete: "))
+        index = int(input("Enter the task number to delete: ")) - 1
         if 0 <= index < len(tasks):
             deleted_task = tasks.pop(index)
-            print(f"Task '{deleted_task['name']}' deleted successfully.")
+            print(f"Task #{index + 1} '{deleted_task['name']}' deleted successfully.")
         else:
             print("Invalid task number.")
     except ValueError:
@@ -35,19 +32,24 @@ def deleteTask():
 
 def searchTask():
     search_query = input("Enter search term: ").lower()
-    found_tasks = [task for task in tasks if search_query.lower() in task['name'].lower()]
+    found_tasks = [task for task in tasks if search_query in task['name'].lower()]
     if found_tasks:
         print("Matching Tasks:")
         for idx, task in enumerate(found_tasks, 1):
-            print(f"{idx}. {task['name']} [{task['priority']}]")
+            print(f"{idx}. {task['name']} [{task['priority']}] at {task['time']}")
     else:
         print("No tasks found matching the search term.")
+
+def sortTasksByPriority():
+    priority_order = {"high": 1, "medium": 2, "low": 3}
+    tasks.sort(key=lambda task: priority_order.get(task['priority'], 4))
+    print("Tasks sorted by priority.")
 
 def backupTasks():
     try:
         with open('backup_todo_data.txt', 'w') as file:
             for task in tasks:
-                file.write(f"{task['name']}|{task['priority']}\n")
+                file.write(f"{task['name']}|{task['priority']}|{task['time']}\n")
         print("Tasks backed up successfully!")
     except Exception as e:
         print(f"An error occurred while backing up tasks: {e}")
@@ -58,8 +60,8 @@ def restoreTasks():
             lines = file.readlines()
             tasks.clear()
             for line in lines:
-                name, priority = line.strip().split('|')
-                tasks.append({"name": name, "priority": priority})
+                name, priority, time = line.strip().split('|')
+                tasks.append({"name": name, "priority": priority, "time": time})
         print("Tasks restored successfully!")
     except FileNotFoundError:
         print("No backup data found.")
@@ -67,7 +69,7 @@ def restoreTasks():
         print(f"An error occurred while restoring tasks: {e}")
 
 if __name__ == "__main__":
-    print("Welcome to the to do list app :)")
+    print("Welcome to the to-do list app :)")
     while True:
         print("\n")
         print("Please select one of the following options")
@@ -76,9 +78,10 @@ if __name__ == "__main__":
         print("2. Delete a task")
         print("3. List tasks")
         print("4. Search tasks")
-        print("5. Backup tasks")
-        print("6. Restore tasks")
-        print("7. Quit")
+        print("5. Sort tasks by priority")
+        print("6. Backup tasks")
+        print("7. Restore tasks")
+        print("8. Quit")
 
         choice = input("Enter your choice: ")
 
@@ -91,10 +94,12 @@ if __name__ == "__main__":
         elif choice == "4":
             searchTask()
         elif choice == "5":
-            backupTasks()
+            sortTasksByPriority()
         elif choice == "6":
-            restoreTasks()
+            backupTasks()
         elif choice == "7":
+            restoreTasks()
+        elif choice == "8":
             break
         else:
             print("Invalid input. Please try again.")
