@@ -1,3 +1,14 @@
+def delete_task(tasks):
+    tasks = get_tasks()
+    if task_id >= 0 and task_id < len(tasks):
+        deleted_task = tasks.pop(task_id)
+        save_tasks(tasks)
+        print(f"Task '{deleted_task}' deleted successfully.")
+    else:
+        print("Invalid task ID.")
+def save_tasks(tasks):
+    with open(TASKS_FILE, "w") as file:
+        file.writelines(task + "\n" for task in tasks)
 def main():
     tasks = load_tasks()
     while True:
