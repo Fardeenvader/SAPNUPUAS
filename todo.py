@@ -2,7 +2,41 @@
 
 
 tasks = []
-ound_tasks:
+
+def addTask():
+    task_name = input("Please enter a task: ")
+    priority = input("Enter priority (high, medium, low): ")
+    
+    tasks.append({"name": task_name, "priority": priority })
+    print(f"Task '{task_name}' with priority '{priority}' added to the list.")
+
+def listTasks():
+    if not tasks:
+        print("There are no tasks currently.")
+    else:
+        print("Current Tasks:")
+        for index, task in enumerate(tasks):
+            print(f"Task #{index}. {task['name']} [{task['priority']}]")
+
+def deleteTask():
+    if not tasks:
+        print("There are no tasks to delete.")
+        return
+    listTasks()
+    try:
+        index = int(input("Enter the task number to delete: "))
+        if 0 <= index < len(tasks):
+            deleted_task = tasks.pop(index)
+            print(f"Task '{deleted_task['name']}' deleted successfully.")
+        else:
+            print("Invalid task number.")
+    except ValueError:
+        print("Invalid input. Please enter a valid task number.")
+
+def searchTask():
+    search_query = input("Enter search term: ").lower()
+    found_tasks = [task for task in tasks if search_query.lower() in task['name'].lower()]
+    if found_tasks:
         print("Matching Tasks:")
         for idx, task in enumerate(found_tasks, 1):
             print(f"{idx}. {task['name']} [{task['priority']}]")
@@ -66,38 +100,3 @@ if __name__ == "__main__":
             print("Invalid input. Please try again.")
 
     print("Goodbye 👋👋")
-
-def addTask():
-    task_name = input("Please enter a task: ")
-    priority = input("Enter priority (high, medium, low): ")
-    
-    tasks.append({"name": task_name, "priority": priority })
-    print(f"Task '{task_name}' with priority '{priority}' added to the list.")
-
-def listTasks():
-    if not tasks:
-        print("There are no tasks currently.")
-    else:
-        print("Current Tasks:")
-        for index, task in enumerate(tasks):
-            print(f"Task #{index}. {task['name']} [{task['priority']}]")
-
-def deleteTask():
-    if not tasks:
-        print("There are no tasks to delete.")
-        return
-    listTasks()
-    try:
-        index = int(input("Enter the task number to delete: "))
-        if 0 <= index < len(tasks):
-            deleted_task = tasks.pop(index)
-            print(f"Task '{deleted_task['name']}' deleted successfully.")
-        else:
-            print("Invalid task number.")
-    except ValueError:
-        print("Invalid input. Please enter a valid task number.")
-
-def searchTask():
-    search_query = input("Enter search term: ").lower()
-    found_tasks = [task for task in tasks if search_query.lower() in task['name'].lower()]
-    if f
