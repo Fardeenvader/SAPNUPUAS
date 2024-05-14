@@ -1,5 +1,5 @@
 tasks = []
-# DONE BY = SHAIK FARDEEN BASHA, VYSHNAVI TAKLAM, SHREEYANSHI GAUTAM, JAYA SHANKAR, PRASANNA KUMAR NAYAK, RAJENDRA PRASAD
+# DONE BY = SHAIK FARDEEN BASHA, VYSHNAVI TALLAM, SHREEYANSHI GAUTAM, JAYA SHANKAR, PRASANNA KUMAR NAYAK, RAJENDRA PRASAD
 def addTask():
     task_name = input("Please enter a task: ")
     priority = input("Enter priority (high, medium, low): ").lower()
