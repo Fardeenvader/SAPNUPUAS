@@ -24,10 +24,10 @@ class User:
             return
         self.list_tasks()
         try:
-            index = int(input("Enter the task number to delete: ")) - 1
-            if 0 <= index < len(self.tasks):
+            index = int(input("Enter the task number to delete: "))
+            if 1 <= index <= len(self.tasks):
                 deleted_task = self.tasks.pop(index)
-                print(f"Task #{index + 1} '{deleted_task['name']}' deleted successfully.")
+                print(f"Task #{index} '{deleted_task['name']}' deleted successfully.")
             else:
                 print("Invalid task number.")
         except ValueError:
