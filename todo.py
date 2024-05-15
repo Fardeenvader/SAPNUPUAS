@@ -30,8 +30,8 @@ class User:
             print("There are no tasks currently.")
         else:
             print("Current Tasks:")
-            for index, task in enumerate(self.tasks):
-                print(f"Task #{index + 1}: {task['name']} [{task['priority']}] at {task['time']}")
+            for index, task in enumerate(self.tasks, 1):  # Start index from 1
+                print(f"Task #{index}: {task['name']} [{task['priority']}] at {task['time']}")
 
     def delete_task(self):
         if not self.tasks:
@@ -39,12 +39,12 @@ class User:
             return
         self.list_tasks()
         try:
-            index = int(input("Enter the task number to delete: ")) - 1
-            while index < 0 or index >= len(self.tasks):
+            index = int(input("Enter the task number to delete: "))
+            while index < 1 or index > len(self.tasks):
                 print("Invalid task number.")
-                index = int(input("Enter the task number to delete: ")) - 1
-            deleted_task = self.tasks.pop(index)
-            print(f"Task #{index + 1} '{deleted_task['name']}' deleted successfully.")
+                index = int(input("Enter the task number to delete: "))
+            deleted_task = self.tasks.pop(index - 1)
+            print(f"Task #{index} '{deleted_task['name']}' deleted successfully.")
         except ValueError:
             print("Invalid input. Please enter a valid task number.")
 
