@@ -1,12 +1,12 @@
 class User:
-    def _init_(self, username):
+    def __init__(self, username):
         self.username = username
         self.tasks = []
 
     def add_task(self):
         task_name = input("Please enter a task: ")
         priority = input("Enter priority (high, medium, low): ").lower()
-        task_time = input('Enter the time of task (hrs): ')
+        task_time = input("Enter the time of task (hrs): ")
         self.tasks.append({"name": task_name, "priority": priority, "time": task_time})
         print(f"Task '{task_name}' with priority '{priority}' added to the list.")
 
@@ -74,7 +74,7 @@ class User:
 
 
 class TodoApp:
-    def _init_(self):
+    def __init__(self):
         self.users = {}
         self.current_user = None
 
@@ -131,6 +131,6 @@ class TodoApp:
         print("Goodbye 👋👋")
 
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     app = TodoApp()
     app.run()
