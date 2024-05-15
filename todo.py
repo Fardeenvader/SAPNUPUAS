@@ -92,6 +92,34 @@ class User:
         except Exception as e:
             print(f"An error occurred while restoring tasks: {e}")
 
+    def edit_task(self):
+        if not self.tasks:
+            print("There are no tasks to edit.")
+            return
+        self.list_tasks()
+        try:
+            index = int(input("Enter the task number to edit: ")) - 1
+            while index < 0 or index >= len(self.tasks):
+                print("Invalid task number.")
+                index = int(input("Enter the task number to edit: ")) - 1
+            task = self.tasks[index]
+
+            print(f"Editing Task #{index + 1}: {task['name']} [{task['priority']}] at {task['time']}")
+            new_name = input(f"Enter new name (leave blank to keep '{task['name']}'): ")
+            new_priority = input(f"Enter new priority (high, medium, low) (leave blank to keep '{task['priority']}'): ").lower()
+            new_time = input(f"Enter new time (hrs) (leave blank to keep '{task['time']}'): ")
+
+            if new_name:
+                task['name'] = self.sanitize_input(new_name)
+            if new_priority in ['high', 'medium', 'low']:
+                task['priority'] = new_priority
+            if new_time.isdigit():
+                task['time'] = new_time
+
+            print(f"Task #{index + 1} updated successfully.")
+        except ValueError:
+            print("Invalid input. Please enter a valid task number.")
+
 
 class TodoApp:
     def __init__(self):
@@ -123,8 +151,9 @@ class TodoApp:
             print("5. Sort tasks by priority")
             print("6. Backup tasks")
             print("7. Restore tasks")
-            print("8. Switch user")
-            print("9. Quit")
+            print("8. Edit a task")
+            print("9. Switch user")
+            print("10. Quit")
 
             choice = input("Enter your choice: ")
 
@@ -143,8 +172,10 @@ class TodoApp:
             elif choice == "7":
                 self.current_user.restore_tasks()
             elif choice == "8":
-                self.switch_user()
+                self.current_user.edit_task()
             elif choice == "9":
+                self.switch_user()
+            elif choice == "10":
                 break
             else:
                 print("Invalid input. Please try again.")
