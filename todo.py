@@ -30,7 +30,7 @@ class User:
             print("There are no tasks currently.")
         else:
             print("Current Tasks:")
-            for index, task in enumerate(self.tasks, 1):  # Start index from 1
+            for index, task in enumerate(self.tasks, 1): 
                 print(f"Task #{index}: {task['name']} [{task['priority']}] at {task['time']}")
 
     def delete_task(self):
