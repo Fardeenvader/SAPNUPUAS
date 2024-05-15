@@ -1,12 +1,27 @@
+import re
+
 class User:
     def __init__(self, username):
         self.username = username
         self.tasks = []
 
+    def sanitize_input(self, input_string):
+        return re.sub(r'[<>]', '', input_string)
+
     def add_task(self):
         task_name = input("Please enter a task: ")
+        task_name = self.sanitize_input(task_name)
+        
         priority = input("Enter priority (high, medium, low): ").lower()
+        while priority not in ['high', 'medium', 'low']:
+            print("Invalid priority. Please enter 'high', 'medium', or 'low'.")
+            priority = input("Enter priority (high, medium, low): ").lower()
+
         task_time = input("Enter the time of task (hrs): ")
+        while not task_time.isdigit():
+            print("Invalid time. Please enter a numeric value.")
+            task_time = input("Enter the time of task (hrs): ")
+
         self.tasks.append({"name": task_name, "priority": priority, "time": task_time})
         print(f"Task '{task_name}' with priority '{priority}' added to the list.")
 
@@ -25,23 +40,26 @@ class User:
         self.list_tasks()
         try:
             index = int(input("Enter the task number to delete: ")) - 1
-            if 0 <= index < len(self.tasks):
-                deleted_task = self.tasks.pop(index)
-                print(f"Task #{index + 1} '{deleted_task['name']}' deleted successfully.")
-            else:
+            while index < 0 or index >= len(self.tasks):
                 print("Invalid task number.")
+                index = int(input("Enter the task number to delete: ")) - 1
+            deleted_task = self.tasks.pop(index)
+            print(f"Task #{index + 1} '{deleted_task['name']}' deleted successfully.")
         except ValueError:
             print("Invalid input. Please enter a valid task number.")
 
     def search_task(self):
-        search_query = input("Enter search term: ").lower()
-        found_tasks = [task for task in self.tasks if search_query in task['name'].lower()]
-        if found_tasks:
-            print("Matching Tasks:")
-            for idx, task in enumerate(found_tasks, 1):
-                print(f"{idx}. {task['name']} [{task['priority']}] at {task['time']}")
-        else:
-            print("No tasks found matching the search term.")
+        search_query = input("Enter search term (supports regex): ")
+        try:
+            found_tasks = [task for task in self.tasks if re.search(search_query, task['name'], re.IGNORECASE)]
+            if found_tasks:
+                print("Matching Tasks:")
+                for idx, task in enumerate(found_tasks, 1):
+                    print(f"{idx}. {task['name']} [{task['priority']}] at {task['time']}")
+            else:
+                print("No tasks found matching the search term.")
+        except re.error:
+            print("Invalid regex pattern. Please try again.")
 
     def sort_tasks_by_priority(self):
         priority_order = {"high": 1, "medium": 2, "low": 3}
@@ -51,24 +69,26 @@ class User:
 
     def backup_tasks(self):
         try:
-            with open(f'{self.username}_backup_todo_data.txt', 'w') as file:
+            backup_file = f'{self.username}_backup_todo_data.txt'
+            with open(backup_file, 'w') as file:
                 for task in self.tasks:
                     file.write(f"{task['name']}|{task['priority']}|{task['time']}\n")
-            print("Tasks backed up successfully!")
+            print(f"Tasks backed up successfully to {backup_file}!")
         except Exception as e:
             print(f"An error occurred while backing up tasks: {e}")
 
     def restore_tasks(self):
         try:
-            with open(f'{self.username}_backup_todo_data.txt', 'r') as file:
+            backup_file = f'{self.username}_backup_todo_data.txt'
+            with open(backup_file, 'r') as file:
                 lines = file.readlines()
                 self.tasks.clear()
                 for line in lines:
                     name, priority, time = line.strip().split('|')
                     self.tasks.append({"name": name, "priority": priority, "time": time})
-            print("Tasks restored successfully!")
+            print(f"Tasks restored successfully from {backup_file}!")
         except FileNotFoundError:
-            print("No backup data found.")
+            print(f"No backup data found for user {self.username}.")
         except Exception as e:
             print(f"An error occurred while restoring tasks: {e}")
 
@@ -80,6 +100,7 @@ class TodoApp:
 
     def get_user(self):
         username = input("Enter your username: ")
+        username = re.sub(r'[<>]', '', username)
         if username not in self.users:
             self.users[username] = User(username)
         self.current_user = self.users[username]
